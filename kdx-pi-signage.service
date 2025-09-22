@@ -1,0 +1,47 @@
+[Unit]
+Description=KDX Pi Signage Service - Sistema de Cartelería Digital
+Documentation=https://github.com/kodex/kdx-pi-signage
+After=graphical-session.target network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+ExecStart=/home/pi/.local/bin/uv run python main.py
+WorkingDirectory=/home/pi/kdx-pi-signage
+Restart=always
+RestartSec=10
+RestartPreventExitStatus=0
+
+# Variables de entorno
+Environment=DISPLAY=:0
+Environment=HOME=/home/pi
+Environment=PATH=/home/pi/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=VIDEO_DIR=/home/pi/kdx-pi-signage/videos
+Environment=LOG_DIR=/home/pi/kdx-pi-signage/logs
+Environment=LOG_LEVEL=INFO
+
+# Configuración de logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kdx-pi-signage
+
+# Configuración de seguridad
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/pi/kdx-pi-signage
+
+# Configuración de recursos
+LimitNOFILE=1024
+MemoryMax=400M
+CPUQuota=80%
+
+# Configuración de reinicio
+StartLimitInterval=300
+StartLimitBurst=5
+
+[Install]
+WantedBy=default.target
