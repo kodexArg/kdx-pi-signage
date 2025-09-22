@@ -1,10 +1,113 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "kdx-pi-signage"
-version = "0.1.0"
-description = "Add your description here"
+version = "1.0.0"
+description = "Sistema de cartelería digital para Raspberry Pi"
 readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [
-    "ffmpeg-python>=0.2.0",
-    "opencv-python>=4.12.0.88",
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia :: Video :: Display",
 ]
+dependencies = [
+    "pydantic>=2.5.0",
+    "loguru>=0.7.0",
+    "python-vlc>=3.0.18121",
+    "watchdog>=3.0.0",
+    "psutil>=5.9.0",
+    "pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/kodex/kdx-pi-signage"
+"Bug Reports" = "https://github.com/kodex/kdx-pi-signage/issues"
+"Source" = "https://github.com/kodex/kdx-pi-signage"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["kdx_pi_signage*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+)
+'''
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = [
+    "tests",
+]
+
+# Configuración de variables de entorno para el sistema
+[tool.kdx-pi-signage.env]
+# Variables de entorno del sistema (no críticas)
+DISPLAY = ":0"  # Display para salida HDMI
+HOME = "/home/pi"  # Directorio home del usuario pi
+PATH_EXTENSION = "/home/pi/.local/bin"  # Extensión del PATH para uv
+VIDEO_DIR = "/home/pi/kdx-pi-signage/videos"  # Directorio de videos
+LOG_DIR = "/home/pi/kdx-pi-signage/logs"  # Directorio de logs
+REFRESH_INTERVAL = "30"  # Intervalo de actualización en segundos
+VLC_CACHE = "1000"  # Caché de VLC en ms
+AUTO_START = "true"  # Inicio automático del servicio
+FULLSCREEN = "true"  # Reproducción en pantalla completa
+LOG_LEVEL = "INFO"  # Nivel de logging (DEBUG, INFO, WARNING, ERROR)
+LOG_ROTATION = "10 MB"  # Rotación de logs
+LOG_RETENTION = "30 days"  # Retención de logs
+
+# Configuración específica de Raspberry Pi
+[tool.kdx-pi-signage.hardware]
+GPU_MEMORY = "128"  # Memoria GPU en MB
+HDMI_FORCE_HOTPLUG = "1"  # Forzar detección HDMI
+HDMI_GROUP = "1"  # Grupo HDMI (CEA)
+HDMI_MODE = "16"  # Modo HDMI (1920x1080 60Hz)
+OVERSCAN_DISABLE = "1"  # Deshabilitar overscan
+
+# Configuración del servicio systemd
+[tool.kdx-pi-signage.service]
+RESTART_POLICY = "always"  # Política de reinicio
+RESTART_DELAY = "10"  # Delay de reinicio en segundos
+WORKING_DIRECTORY = "/home/pi/kdx-pi-signage"  # Directorio de trabajo
+SERVICE_TYPE = "simple"  # Tipo de servicio systemd
+WANTED_BY = "default.target"  # Target de systemd
