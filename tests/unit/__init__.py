@@ -1,0 +1,1 @@
+"""Tests unitarios para componentes individuales."""

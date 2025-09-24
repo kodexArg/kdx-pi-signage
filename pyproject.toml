@@ -43,8 +43,9 @@ dev = [
 "Source" = "https://github.com/kodex/kdx-pi-signage"
 
 [tool.setuptools.packages.find]
-where = ["src"]
-include = ["kdx_pi_signage*"]
+where = ["."]
+include = ["*.py"]
+exclude = ["tests*"]
 
 [tool.black]
 line-length = 88

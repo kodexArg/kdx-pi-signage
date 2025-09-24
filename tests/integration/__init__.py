@@ -1,0 +1,1 @@
+"""Tests de integración para el sistema completo."""

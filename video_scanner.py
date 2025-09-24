@@ -79,10 +79,11 @@ class VideoFileHandler(FileSystemEventHandler):
                 dest_is_video = self._is_video_file(event.dest_path)
                 
                 if src_is_video and dest_is_video:
-                    # Renombrado de video
+                    # Renombrado de video - tratado como eliminación + creación
                     self.logger.info(f"Video renombrado: {Path(event.src_path).name} -> {Path(event.dest_path).name}")
                     if self.callback:
-                        self.callback('moved', event.src_path, event.dest_path)
+                        self.callback('deleted', event.src_path)
+                        self.callback('created', event.dest_path)
                 elif src_is_video and not dest_is_video:
                     # Video movido fuera o cambio de extensión
                     self.logger.info(f"Video removido: {Path(event.src_path).name}")
@@ -320,9 +321,11 @@ class VideoScanner:
         video_dir = self.config.video_dir
         
         info = {
+            'path': str(video_dir),  # Cambiar 'directory_path' por 'path'
             'directory_path': str(video_dir),
             'exists': video_dir.exists(),
             'is_monitoring': self._is_monitoring,
+            'video_count': len(self._cached_videos),  # Cambiar 'cached_video_count' por 'video_count'
             'last_scan_time': self._last_scan_time,
             'supported_formats': self.config.supported_formats,
             'cached_video_count': len(self._cached_videos)

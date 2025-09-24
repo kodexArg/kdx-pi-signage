@@ -201,7 +201,12 @@ class PlaylistManager:
             for file_path in video_dir.iterdir():
                 if file_path.is_file() and file_path.suffix.lower() in self.config.supported_formats:
                     try:
-                        video_info = VideoInfo(file_path=file_path)
+                        video_info = VideoInfo(
+                            file_path=file_path,
+                            filename=file_path.name,
+                            file_size=file_path.stat().st_size,
+                            format_extension=file_path.suffix.lower()
+                        )
                         videos.append(video_info)
                         video_count += 1
                         self.logger.debug(f"Video cargado: {file_path.name}")
